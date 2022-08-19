@@ -1,0 +1,133 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Data analysis getting started
+
+```elixir
+Mix.install([
+  {:explorer, "~> 0.2.0"},
+  {:kino, "~> 0.6.1"},
+  {:kino_vega_lite, "~> 0.1.1"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+Resolving Hex dependencies...
+Dependency resolution completed:
+New:
+  castore 0.1.18
+  explorer 0.2.0
+  kino 0.6.2
+  kino_vega_lite 0.1.3
+  rustler_precompiled 0.5.1
+  table 0.1.2
+  table_rex 3.1.1
+  vega_lite 0.1.6
+* Getting explorer (Hex package)
+* Getting kino (Hex package)
+* Getting kino_vega_lite (Hex package)
+* Getting table (Hex package)
+* Getting vega_lite (Hex package)
+* Getting rustler_precompiled (Hex package)
+* Getting table_rex (Hex package)
+* Getting castore (Hex package)
+==> table
+Compiling 5 files (.ex)
+Generated table app
+==> vega_lite
+Compiling 5 files (.ex)
+Generated vega_lite app
+==> kino
+Compiling 28 files (.ex)
+Generated kino app
+==> kino_vega_lite
+Compiling 4 files (.ex)
+Generated kino_vega_lite app
+==> table_rex
+Compiling 7 files (.ex)
+Generated table_rex app
+==> castore
+Compiling 1 file (.ex)
+Generated castore app
+==> rustler_precompiled
+Compiling 4 files (.ex)
+Generated rustler_precompiled app
+==> explorer
+Compiling 15 files (.ex)
+
+13:47:50.062 [debug] Copying NIF from cache and extracting to /Users/christophereyre/Library/Caches/mix/installs/elixir-1.13.4-erts-13.0.3/2440ffa747366c462d87aaae47b5b044/_build/dev/lib/explorer/priv/native/libexplorer-v0.2.0-nif-2.16-x86_64-apple-darwin.so
+warning: Table.to_columns_with_info/1 is deprecated. Use Table.Reader.init/1 to get reader with metadata, then pass the reader to Table.to_columns/2
+  lib/explorer/polars_backend/data_frame.ex:166: Explorer.PolarsBackend.DataFrame.from_tabular/1
+
+Generated explorer app
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+```elixir
+alias Explorer.{DataFrame, Series}
+mpg_file = "~/study/mpg.csv"
+
+mpg =
+  DataFrame.from_csv!(mpg_file)
+  |> DataFrame.select([""], :drop)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+#Explorer.DataFrame<
+  Polars[234 x 11]
+  manufacturer string ["audi", "audi", "audi", "audi", "audi", ...]
+  model string ["a4", "a4", "a4", "a4", "a4", ...]
+  displ float [1.8, 1.8, 2.0, 2.0, 2.8, ...]
+  year integer [1999, 1999, 2008, 2008, 1999, ...]
+  cyl integer [4, 4, 4, 4, 6, ...]
+  trans string ["auto(l5)", "manual(m5)", "manual(m6)", "auto(av)", "auto(l5)", ...]
+  drv string ["f", "f", "f", "f", "f", ...]
+  cty integer [18, 21, 20, 21, 16, ...]
+  hwy integer [29, 29, 31, 30, 26, ...]
+  fl string ["p", "p", "p", "p", "p", ...]
+  class string ["compact", "compact", "compact", "compact", "compact", ...]
+>
+```
+
+<!-- livebook:{"attrs":{"chart_title":null,"height":null,"layers":[{"chart_type":"point","color_field":null,"color_field_aggregate":null,"color_field_type":null,"data_variable":"mpg","x_field":"displ","x_field_aggregate":null,"x_field_type":"quantitative","y_field":"hwy","y_field_aggregate":null,"y_field_type":"quantitative"}],"vl_alias":"Elixir.VegaLite","width":null},"kind":"Elixir.KinoVegaLite.ChartCell","livebook_object":"smart_cell"} -->
+
+```elixir
+VegaLite.new()
+|> VegaLite.data_from_values(mpg, only: ["displ", "hwy"])
+|> VegaLite.mark(:point)
+|> VegaLite.encode_field(:x, "displ", type: :quantitative)
+|> VegaLite.encode_field(:y, "hwy", type: :quantitative)
+```
+
+<!-- livebook:{"output":true} -->
+
+```vega-lite
+{"$schema":"https://vega.github.io/schema/vega-lite/v5.json","data":{"values":[{"displ":1.8,"hwy":29},{"displ":1.8,"hwy":29},{"displ":2.0,"hwy":31},{"displ":2.0,"hwy":30},{"displ":2.8,"hwy":26},{"displ":2.8,"hwy":26},{"displ":3.1,"hwy":27},{"displ":1.8,"hwy":26},{"displ":1.8,"hwy":25},{"displ":2.0,"hwy":28},{"displ":2.0,"hwy":27},{"displ":2.8,"hwy":25},{"displ":2.8,"hwy":25},{"displ":3.1,"hwy":25},{"displ":3.1,"hwy":25},{"displ":2.8,"hwy":24},{"displ":3.1,"hwy":25},{"displ":4.2,"hwy":23},{"displ":5.3,"hwy":20},{"displ":5.3,"hwy":15},{"displ":5.3,"hwy":20},{"displ":5.7,"hwy":17},{"displ":6.0,"hwy":17},{"displ":5.7,"hwy":26},{"displ":5.7,"hwy":23},{"displ":6.2,"hwy":26},{"displ":6.2,"hwy":25},{"displ":7.0,"hwy":24},{"displ":5.3,"hwy":19},{"displ":5.3,"hwy":14},{"displ":5.7,"hwy":15},{"displ":6.5,"hwy":17},{"displ":2.4,"hwy":27},{"displ":2.4,"hwy":30},{"displ":3.1,"hwy":26},{"displ":3.5,"hwy":29},{"displ":3.6,"hwy":26},{"displ":2.4,"hwy":24},{"displ":3.0,"hwy":24},{"displ":3.3,"hwy":22},{"displ":3.3,"hwy":22},{"displ":3.3,"hwy":24},{"displ":3.3,"hwy":24},{"displ":3.3,"hwy":17},{"displ":3.8,"hwy":22},{"displ":3.8,"hwy":21},{"displ":3.8,"hwy":23},{"displ":4.0,"hwy":23},{"displ":3.7,"hwy":19},{"displ":3.7,"hwy":18},{"displ":3.9,"hwy":17},{"displ":3.9,"hwy":17},{"displ":4.7,"hwy":19},{"displ":4.7,"hwy":19},{"displ":4.7,"hwy":12},{"displ":5.2,"hwy":17},{"displ":5.2,"hwy":15},{"displ":3.9,"hwy":17},{"displ":4.7,"hwy":17},{"displ":4.7,"hwy":12},{"displ":4.7,"hwy":17},{"displ":5.2,"hwy":16},{"displ":5.7,"hwy":18},{"displ":5.9,"hwy":15},{"displ":4.7,"hwy":16},{"displ":4.7,"hwy":12},{"displ":4.7,"hwy":17},{"displ":4.7,"hwy":17},{"displ":4.7,"hwy":16},{"displ":4.7,"hwy":12},{"displ":5.2,"hwy":15},{"displ":5.2,"hwy":16},{"displ":5.7,"hwy":17},{"displ":5.9,"hwy":15},{"displ":4.6,"hwy":17},{"displ":5.4,"hwy":17},{"displ":5.4,"hwy":18},{"displ":4.0,"hwy":17},{"displ":4.0,"hwy":19},{"displ":4.0,"hwy":17},{"displ":4.0,"hwy":19},{"displ":4.6,"hwy":19},{"displ":5.0,"hwy":17},{"displ":4.2,"hwy":17},{"displ":4.2,"hwy":17},{"displ":4.6,"hwy":16},{"displ":4.6,"hwy":16},{"displ":4.6,"hwy":17},{"displ":5.4,"hwy":15},{"displ":5.4,"hwy":17},{"displ":3.8,"hwy":26},{"displ":3.8,"hwy":25},{"displ":4.0,"hwy":26},{"displ":4.0,"hwy":24},{"displ":4.6,"hwy":21},{"displ":4.6,"hwy":22},{"displ":4.6,"hwy":23},{"displ":4.6,"hwy":22},{"displ":5.4,"hwy":20},{"displ":1.6,"hwy":33},{"displ":1.6,"hwy":32},{"displ":1.6,"hwy":32},{"displ":1.6,"hwy":29},{"displ":1.6,"hwy":32},{"displ":1.8,"hwy":34},{"displ":1.8,"hwy":36},{"displ":1.8,"hwy":36},{"displ":2.0,"hwy":29},{"displ":2.4,"hwy":26},{"displ":2.4,"hwy":27},{"displ":2.4,"hwy":30},{"displ":2.4,"hwy":31},{"displ":2.5,"hwy":26},{"displ":2.5,"hwy":26},{"displ":3.3,"hwy":28},{"displ":2.0,"hwy":26},{"displ":2.0,"hwy":29},{"displ":2.0,"hwy":28},{"displ":2.0,"hwy":27},{"displ":2.7,"hwy":24},{"displ":2.7,"hwy":24},{"displ":2.7,"hwy":24},{"displ":3.0,"hwy":22},{"displ":3.7,"hwy":19},{"displ":4.0,"hwy":20},{"displ":4.7,"hwy":17},{"displ":4.7,"hwy":12},{"displ":4.7,"hwy":19},{"displ":5.7,"hwy":18},{"displ":6.1,"hwy":14},{"displ":4.0,"hwy":15},{"displ":4.2,"hwy":18},{"displ":4.4,"hwy":18},{"displ":4.6,"hwy":15},{"displ":5.4,"hwy":17},{"displ":5.4,"hwy":16},{"displ":5.4,"hwy":18},{"displ":4.0,"hwy":17},{"displ":4.0,"hwy":19},{"displ":4.6,"hwy":19},{"displ":5.0,"hwy":17},{"displ":2.4,"hwy":29},{"displ":2.4,"hwy":27},{"displ":2.5,"hwy":31},{"displ":2.5,"hwy":32},{"displ":3.5,"hwy":27},{"displ":3.5,"hwy":26},{"displ":3.0,"hwy":26},{"displ":3.0,"hwy":25},{"displ":3.5,"hwy":25},{"displ":3.3,"hwy":17},{"displ":3.3,"hwy":17},{"displ":4.0,"hwy":20},{"displ":5.6,"hwy":18},{"displ":3.1,"hwy":26},{"displ":3.8,"hwy":26},{"displ":3.8,"hwy":27},{"displ":3.8,"hwy":28},{"displ":5.3,"hwy":25},{"displ":2.5,"hwy":25},{"displ":2.5,"hwy":24},{"displ":2.5,"hwy":27},{"displ":2.5,"hwy":25},{"displ":2.5,"hwy":26},{"displ":2.5,"hwy":23},{"displ":2.2,"hwy":26},{"displ":2.2,"hwy":26},{"displ":2.5,"hwy":26},{"displ":2.5,"hwy":26},{"displ":2.5,"hwy":25},{"displ":2.5,"hwy":27},{"displ":2.5,"hwy":25},{"displ":2.5,"hwy":27},{"displ":2.7,"hwy":20},{"displ":2.7,"hwy":20},{"displ":3.4,"hwy":19},{"displ":3.4,"hwy":17},{"displ":4.0,"hwy":20},{"displ":4.7,"hwy":17},{"displ":2.2,"hwy":29},{"displ":2.2,"hwy":27},{"displ":2.4,"hwy":31},{"displ":2.4,"hwy":31},{"displ":3.0,"hwy":26},{"displ":3.0,"hwy":26},{"displ":3.5,"hwy":28},{"displ":2.2,"hwy":27},{"displ":2.2,"hwy":29},{"displ":2.4,"hwy":31},{"displ":2.4,"hwy":31},{"displ":3.0,"hwy":26},{"displ":3.0,"hwy":26},{"displ":3.3,"hwy":27},{"displ":1.8,"hwy":30},{"displ":1.8,"hwy":33},{"displ":1.8,"hwy":35},{"displ":1.8,"hwy":37},{"displ":1.8,"hwy":35},{"displ":4.7,"hwy":15},{"displ":5.7,"hwy":18},{"displ":2.7,"hwy":20},{"displ":2.7,"hwy":20},{"displ":2.7,"hwy":22},{"displ":3.4,"hwy":17},{"displ":3.4,"hwy":19},{"displ":4.0,"hwy":18},{"displ":4.0,"hwy":20},{"displ":2.0,"hwy":29},{"displ":2.0,"hwy":26},{"displ":2.0,"hwy":29},{"displ":2.0,"hwy":29},{"displ":2.8,"hwy":24},{"displ":1.9,"hwy":44},{"displ":2.0,"hwy":29},{"displ":2.0,"hwy":26},{"displ":2.0,"hwy":29},{"displ":2.0,"hwy":29},{"displ":2.5,"hwy":29},{"displ":2.5,"hwy":29},{"displ":2.8,"hwy":23},{"displ":2.8,"hwy":24},{"displ":1.9,"hwy":44},{"displ":1.9,"hwy":41},{"displ":2.0,"hwy":29},{"displ":2.0,"hwy":26},{"displ":2.5,"hwy":28},{"displ":2.5,"hwy":29},{"displ":1.8,"hwy":29},{"displ":1.8,"hwy":29},{"displ":2.0,"hwy":28},{"displ":2.0,"hwy":29},{"displ":2.8,"hwy":26},{"displ":2.8,"hwy":26},{"displ":3.6,"hwy":26}]},"encoding":{"x":{"field":"displ","type":"quantitative"},"y":{"field":"hwy","type":"quantitative"}},"mark":"point"}
+```
+
+```elixir
+alias VegaLite, as: Vl
+mpg_url = "https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/mpg.csv"
+
+Vl.new()
+|> Vl.data_from_url(mpg_url)
+|> Vl.mark(:point)
+|> Vl.encode_field(:x, "displ", type: :quantitative)
+|> Vl.encode_field(:y, "hwy", type: :quantitative)
+```
+
+<!-- livebook:{"output":true} -->
+
+```vega-lite
+{"$schema":"https://vega.github.io/schema/vega-lite/v5.json","data":{"url":"https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/mpg.csv"},"encoding":{"x":{"field":"displ","type":"quantitative"},"y":{"field":"hwy","type":"quantitative"}},"mark":"point"}
+```
