@@ -13,59 +13,6 @@ Mix.install([
 <!-- livebook:{"output":true} -->
 
 ```
-Resolving Hex dependencies...
-Dependency resolution completed:
-New:
-  castore 0.1.18
-  explorer 0.2.0
-  kino 0.6.2
-  kino_vega_lite 0.1.3
-  rustler_precompiled 0.5.1
-  table 0.1.2
-  table_rex 3.1.1
-  vega_lite 0.1.6
-* Getting explorer (Hex package)
-* Getting kino (Hex package)
-* Getting kino_vega_lite (Hex package)
-* Getting table (Hex package)
-* Getting vega_lite (Hex package)
-* Getting rustler_precompiled (Hex package)
-* Getting table_rex (Hex package)
-* Getting castore (Hex package)
-==> table
-Compiling 5 files (.ex)
-Generated table app
-==> vega_lite
-Compiling 5 files (.ex)
-Generated vega_lite app
-==> kino
-Compiling 28 files (.ex)
-Generated kino app
-==> kino_vega_lite
-Compiling 4 files (.ex)
-Generated kino_vega_lite app
-==> table_rex
-Compiling 7 files (.ex)
-Generated table_rex app
-==> castore
-Compiling 1 file (.ex)
-Generated castore app
-==> rustler_precompiled
-Compiling 4 files (.ex)
-Generated rustler_precompiled app
-==> explorer
-Compiling 15 files (.ex)
-
-13:47:50.062 [debug] Copying NIF from cache and extracting to /Users/christophereyre/Library/Caches/mix/installs/elixir-1.13.4-erts-13.0.3/2440ffa747366c462d87aaae47b5b044/_build/dev/lib/explorer/priv/native/libexplorer-v0.2.0-nif-2.16-x86_64-apple-darwin.so
-warning: Table.to_columns_with_info/1 is deprecated. Use Table.Reader.init/1 to get reader with metadata, then pass the reader to Table.to_columns/2
-  lib/explorer/polars_backend/data_frame.ex:166: Explorer.PolarsBackend.DataFrame.from_tabular/1
-
-Generated explorer app
-```
-
-<!-- livebook:{"output":true} -->
-
-```
 :ok
 ```
 

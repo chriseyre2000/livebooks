@@ -1,0 +1,27 @@
+# TODO List
+
+## Section
+
+I am aiming to experiment with Kubernetes so that I can get the point of quickly setting up a sample distributed Elixir application running in K8S (probably Minikube for now).
+
+However I have a series of tasks to do and these start spinning off other tasks.
+This is my TODO List so that I don't lose track.
+
+* Create a helper for elixir so that I can build a docker container for any Elixir app.
+* Create a helper to create the K8S Setup for that project.
+  This may include a Helm file for the project.
+
+Other tasks underway
+
+* Write a blog post on json schema validation
+* Start a list of known Elixir projects that have build issues and raise PR's to fix them
+
+```elixir
+
+```
+
+## Projects to Fix
+
+fs Hex package
+
+dependency :fs is using Rebar 2, which is no longer maintained and no longer works in recent Erlang/OTP versions. Remove the :manager option or set it to :rebar3 instead
