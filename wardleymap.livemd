@@ -1,0 +1,87 @@
+# Wardley Map
+
+```elixir
+Mix.install([:vega_lite, :kino, {:kino_vega_lite, "~> 0.1.1"}])
+```
+
+## Crude Starting point
+
+```elixir
+alias VegaLite, as: Vl
+
+Vl.from_json("""
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "A labelled scatterplot to turn into a Wardley Map.",
+  "padding": 5,
+  "width": 400,
+  "height": 400,
+  "autosize": "pad",
+
+  "data": [
+    {
+    "name": "wardley",  
+    "values": [
+      {"Maturity": "0.1", "Visibility": 0.2, "Title": "Tea"}, 
+      {"Maturity": "0.3", "Visibility": 0.4, "Title": "Water"},
+      {"Maturity": "0.5", "Visibility": 0.9, "Title": "Cup of tea"}
+    ]
+  }
+  ],
+
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {"data": "wardley", "field": "Maturity"},
+      "range": "width"
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {"data": "wardley", "field": "Visibility"},
+      "range": "height"
+    }
+  ],
+
+  "axes": [
+    {"orient": "left", "scale": "y", "title": "Visibility"},
+    {"orient": "bottom", "scale": "x", "title": "Maturity"}
+  ],
+
+  "marks": [
+    {
+      "name": "points",
+      "type": "symbol",
+      "from": {"data": "wardley"},
+      "encode": {
+        "enter": {
+          "x": {"scale": "x", "field": "Maturity"},
+          "y": {"scale": "y", "field": "Visibility"},
+          "size": {"value": 25},
+          "fillOpacity": {"value": 0.5}
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {"data": "points"},
+      "encode": {
+        "enter": {
+          "text": {"field": "datum.Title"},
+          "fontSize": {"value": 18}
+        }
+      },
+      "transform": [
+        {
+          "type": "label",
+          "anchor": ["top", "bottom", "right", "left"],
+          "offset": [1],
+          "size": {"signal": "[width + 60, height]"}
+        }
+      ]
+    }
+  ]
+}
+""")
+```
