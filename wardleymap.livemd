@@ -22,9 +22,13 @@ Vl.from_json("""
     {
     "name": "wardley",  
     "values": [
-      {"Maturity": "0.1", "Visibility": 0.2, "Title": "Tea"}, 
-      {"Maturity": "0.3", "Visibility": 0.4, "Title": "Water"},
-      {"Maturity": "0.5", "Visibility": 0.9, "Title": "Cup of tea"}
+      {"Evolution": "0.7", "Visibility": 0.8, "Title": "Tea"}, 
+      {"Evolution": "0.7", "Visibility": 0.3, "Title": "Water"},
+      {"Evolution": "0.8", "Visibility": 0.2, "Title": "Electricity"},
+      {"Evolution": "0.3", "Visibility": 0.4, "Title": "Kettle"},
+      {"Evolution": "0.65", "Visibility": 0.5, "Title": "Hot Water"},
+      {"Evolution": "0.75", "Visibility": 0.7, "Title": "Cup"},
+      {"Evolution": "0.7", "Visibility": 0.95, "Title": "Cup of tea"}
     ]
   }
   ],
@@ -33,7 +37,7 @@ Vl.from_json("""
     {
       "name": "x",
       "type": "linear",
-      "domain": {"data": "wardley", "field": "Maturity"},
+      "domain": {"data": "wardley", "field": "Evolution"},
       "range": "width"
     },
     {
@@ -46,7 +50,7 @@ Vl.from_json("""
 
   "axes": [
     {"orient": "left", "scale": "y", "title": "Visibility"},
-    {"orient": "bottom", "scale": "x", "title": "Maturity"}
+    {"orient": "bottom", "scale": "x", "title": "Evolution"}
   ],
 
   "marks": [
@@ -56,8 +60,8 @@ Vl.from_json("""
       "from": {"data": "wardley"},
       "encode": {
         "enter": {
-          "x": {"scale": "x", "field": "Maturity"},
-          "y": {"scale": "y", "field": "Visibility"},
+          "x": {"scale": "x", "field": "Evolution", "minValue": 0, "maxValue": 1},
+          "y": {"scale": "y", "field": "Visibility", "minValue": 0, "maxValue": 1},
           "size": {"value": 25},
           "fillOpacity": {"value": 0.5}
         }
