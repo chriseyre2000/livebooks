@@ -1,0 +1,250 @@
+# Wardley Map
+
+```elixir
+Mix.install([
+  :vega_lite,
+  :kino,
+  {:kino_vega_lite, "~> 0.1.1"}
+])
+```
+
+## Crude Starting point
+
+```elixir
+defmodule KinoDocs.HTML do
+  use Kino.JS
+
+  def new(html) do
+    Kino.JS.new(__MODULE__, html)
+  end
+
+  asset "main.js" do
+    """
+    export function init(ctx, html) {
+      ctx.root.innerHTML = html;
+    }
+    """
+  end
+end
+```
+
+```elixir
+KinoDocs.HTML.new("<h1>Hello</h1>")
+```
+
+```elixir
+defmodule KinoDocs.D3 do
+  use Kino.JS
+
+  def new(html) do
+    Kino.JS.new(__MODULE__, html)
+  end
+
+  asset "main.js" do
+    """
+    import "https://d3js.org/d3.v5.js"
+    export function init(ctx, html) {
+      ctx.root.innerHTML = '<svg id="svg1" style="margin: 0 auto; display: block;"></svg>';
+      let svg = d3.select('#svg1')
+        .attr('width', 400)
+        .attr('height', 400)
+        .style('background-color', 'black');
+
+      svg.append('line')
+        .style("stroke", "lightgreen")
+        .style("stroke-width", 10)
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", 200)
+        .attr("y2", 200); 
+    }
+    """
+  end
+end
+```
+
+```elixir
+a = """
+<div>Hello</div>
+<svg id="svg1" style="margin: 0 auto; display: block;"></svg>
+<script>
+           
+</script>
+"""
+
+KinoDocs.D3.new(a)
+```
+
+```elixir
+alias VegaLite, as: Vl
+```
+
+```elixir
+Vl.from_json("""
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "A labelled scatterplot to turn into a Wardley Map.",
+  "padding": 5,
+  "width": 400,
+  "height": 400,
+  "autosize": "pad",
+
+  "data": [
+    {
+    "name": "wardley",  
+    "values": [
+      {"Evolution": "0.7", "Visibility": 0.8, "Title": "Tea"}, 
+      {"Evolution": "0.7", "Visibility": 0.3, "Title": "Water"},
+      {"Evolution": "0.8", "Visibility": 0.2, "Title": "Electricity"},
+      {"Evolution": "0.3", "Visibility": 0.4, "Title": "Kettle"},
+      {"Evolution": "0.65", "Visibility": 0.5, "Title": "Hot Water"},
+      {"Evolution": "0.75", "Visibility": 0.7, "Title": "Cup"},
+      {"Evolution": "0.7", "Visibility": 0.95, "Title": "Cup of tea"}
+    ]
+  }
+  ],
+
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {"data": "wardley", "field": "Evolution"},
+      "range": "width"
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {"data": "wardley", "field": "Visibility"},
+      "range": "height"
+    }
+  ],
+
+  "axes": [
+    {"orient": "left", "scale": "y", "title": "Visibility"},
+    {"orient": "bottom", "scale": "x", "title": "Evolution"}
+  ],
+
+  "marks": [
+    {
+      "name": "points",
+      "type": "symbol",
+      "from": {"data": "wardley"},
+      "encode": {
+        "enter": {
+          "x": {"scale": "x", "field": "Evolution", "minValue": 0, "maxValue": 1},
+          "y": {"scale": "y", "field": "Visibility", "minValue": 0, "maxValue": 1},
+          "size": {"value": 25},
+          "fillOpacity": {"value": 0.5}
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {"data": "points"},
+      "encode": {
+        "enter": {
+          "text": {"field": "datum.Title"},
+          "fontSize": {"value": 18}
+        }
+      },
+      "transform": [
+        {
+          "type": "label",
+          "anchor": ["top", "bottom", "right", "left"],
+          "offset": [1],
+          "size": {"signal": "[width + 60, height]"}
+        }
+      ]
+    }
+  ]
+}
+""")
+```
+
+```elixir
+data = [
+  wardley: [
+    %{"Evolution" => "0.7", "Visibility" => 0.8, "Title" => "Tea"},
+    %{"Evolution" => "0.7", "Visibility" => 0.3, "Title" => "Water"},
+    %{"Evolution" => "0.8", "Visibility" => 0.2, "Title" => "Electricity"},
+    %{"Evolution" => "0.3", "Visibility" => 0.4, "Title" => "Kettle"},
+    %{"Evolution" => "0.65", "Visibility" => 0.5, "Title" => "Hot Water"},
+    %{"Evolution" => "0.75", "Visibility" => 0.7, "Title" => "Cup"},
+    %{"Evolution" => "0.7", "Visibility" => 0.95, "Title" => "Cup of tea"}
+  ]
+]
+
+%VegaLite{
+  spec: %{
+    "$schema" => "https://vega.github.io/schema/vega/v5.json",
+    "autosize" => "pad",
+    "axes" => [
+      %{"orient" => "left", "scale" => "y", "title" => "Visibility"},
+      %{"orient" => "bottom", "scale" => "x", "title" => "Evolution"}
+    ],
+    "description" => "A labelled scatterplot to turn into a Wardley Map.",
+    "height" => 400,
+    "marks" => [
+      %{
+        "encode" => %{
+          "enter" => %{
+            "fillOpacity" => %{"value" => 0.5},
+            "size" => %{"value" => 25},
+            "x" => %{
+              "field" => "Evolution",
+              "maxValue" => 1,
+              "minValue" => 0,
+              "scale" => "x"
+            },
+            "y" => %{
+              "field" => "Visibility",
+              "maxValue" => 1,
+              "minValue" => 0,
+              "scale" => "y"
+            }
+          }
+        },
+        "from" => %{"data" => "wardley"},
+        "name" => "points",
+        "type" => "symbol"
+      },
+      %{
+        "encode" => %{
+          "enter" => %{
+            "fontSize" => %{"value" => 18},
+            "text" => %{"field" => "datum.Title"}
+          }
+        },
+        "from" => %{"data" => "points"},
+        "transform" => [
+          %{
+            "anchor" => ["top", "bottom", "right", "left"],
+            "offset" => [1],
+            "size" => %{"signal" => "[width + 60, height]"},
+            "type" => "label"
+          }
+        ],
+        "type" => "text"
+      }
+    ],
+    "padding" => 5,
+    "scales" => [
+      %{
+        "domain" => %{"data" => "wardley", "field" => "Evolution"},
+        "name" => "x",
+        "range" => "width",
+        "type" => "linear"
+      },
+      %{
+        "domain" => %{"data" => "wardley", "field" => "Visibility"},
+        "name" => "y",
+        "range" => "height",
+        "type" => "linear"
+      }
+    ],
+    "width" => 400
+  }
+}
+|> Vl.datasets_from_values(wardley: data)
+|> Vl.data(data: "wardley")
+```
