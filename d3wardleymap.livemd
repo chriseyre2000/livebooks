@@ -1,0 +1,130 @@
+# D3 Wardley Map
+
+```elixir
+Mix.install([
+  :vega_lite,
+  :kino,
+  {:kino_vega_lite, "~> 0.1.1"}
+])
+```
+
+## Crude Starting point
+
+This is an attempt to create a Wardley Mapping rendered in Livebook
+
+```elixir
+defmodule Kino.D3JS do
+  use Kino.JS
+
+  def new(spec) do
+    Kino.JS.new(__MODULE__, spec)
+  end
+
+  asset "main.js" do
+    """
+    import "https://d3js.org/d3.v5.js"
+    export function init(ctx, spec) {
+      const myId = spec.id || "my-id"
+      const width = spec.width || 800;
+      const height = spec.height || 400;
+      const background = spec.background || 'white'
+      const padding = spec.padding || 20;
+
+      // Note that the maths y axis is the reflection of the d3 one!
+      const yaxis = d3.scaleLinear()
+      .domain([0, 1.0]) // unit: km
+      .range([height - padding, padding]);
+
+      const xaxis = d3.scaleLinear()
+      .domain([0, 1.0]) // unit: km
+      .range([padding, width - padding]);
+
+      ctx.root.innerHTML = `<svg id=${myId} style="margin: 0 auto; display: block;"></svg>`;
+      let svg = d3.select(`#${myId}`)
+        .attr('width', width)
+        .attr('height', height)
+        .style('background-color', background);
+
+      // y axis  
+      svg.append('line')
+        .style("stroke", "black")
+        .style("stroke-width", 2)
+        .attr("x1", xaxis(0))
+        .attr("y1", yaxis(0) )
+        .attr("x2", xaxis(0))
+        .attr("y2", yaxis(1)); 
+      // x axis  
+      svg.append('line')
+        .style("stroke", "black")
+        .style("stroke-width", 2)
+        .attr("x1", xaxis(0))
+        .attr("y1", yaxis(0) )
+        .attr("x2", xaxis(1))
+        .attr("y2", yaxis(0));   
+
+      //Boundaries  
+      svg.append('line')
+        .style("stroke", "black")
+        .style("stroke-width", 1)
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("x1", xaxis(0.25))
+        .attr("y1", yaxis(0) )
+        .attr("x2", xaxis(0.25))
+        .attr("y2", yaxis(1));      
+
+     svg.append('line')
+        .style("stroke", "black")
+        .style("stroke-width", 1)
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("x1", xaxis(0.5))
+        .attr("y1", yaxis(0) )
+        .attr("x2", xaxis(0.5))
+        .attr("y2", yaxis(1));      
+     
+    svg.append('line')
+        .style("stroke", "black")
+        .style("stroke-width", 1)
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("x1", xaxis(0.75))
+        .attr("y1", yaxis(0) )
+        .attr("x2", xaxis(0.75))
+        .attr("y2", yaxis(1));      
+
+    svg.append("text")
+    .attr("x", xaxis(0))
+    .attr("y", yaxis(0) + (padding * 0.75))
+    .text(() => "Genesis")
+
+     svg.append("text")
+    .attr("x", xaxis(0.25))
+    .attr("y", yaxis(0) + (padding * 0.75))
+    .text(() => "Custom Built")
+
+    svg.append("text")
+    .attr("x", xaxis(0.5))
+    .attr("y", yaxis(0) + (padding * 0.75))
+    .text(() => "Product (+ Rental)")
+
+    svg.append("text")
+    .attr("x", xaxis(0.75))
+    .attr("y", yaxis(0) + (padding * 0.75))
+    .text(() => "Commodity (+ Utility)")
+
+    svg.append("text")
+    .attr("x", xaxis(0) - 1 * padding)
+    .attr("y", yaxis(1) - 0.25 * padding)
+    .text(() => "Value Chain")
+
+
+    // ==== end of JS ====
+    }
+    """
+  end
+end
+```
+
+```elixir
+Kino.D3JS.new("""
+{"id": "myid7"}
+""")
+```
