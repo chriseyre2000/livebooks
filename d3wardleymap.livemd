@@ -24,11 +24,17 @@ defmodule Kino.D3JS do
     """
     import "https://d3js.org/d3.v5.js"
     export function init(ctx, spec) {
-      const myId = spec.id || "my-id"
-      const width = spec.width || 800;
-      const height = spec.height || 400;
-      const background = spec.background || 'white'
-      const padding = spec.padding || 20;
+
+      console.log(JSON.stringify(spec));
+
+      let specDetails = JSON.parse(spec)
+
+      const myId = specDetails.id || "my-id"
+      const width = specDetails.width || 800;
+      const height = specDetails.height || 400;
+      const background = specDetails.background || 'white'
+      const padding = specDetails.padding || 20;
+      const mapItems = specDetails["map"] || []
 
       // Note that the maths y axis is the reflection of the d3 one!
       const yaxis = d3.scaleLinear()
@@ -53,6 +59,7 @@ defmodule Kino.D3JS do
         .attr("y1", yaxis(0) )
         .attr("x2", xaxis(0))
         .attr("y2", yaxis(1)); 
+
       // x axis  
       svg.append('line')
         .style("stroke", "black")
@@ -113,7 +120,43 @@ defmodule Kino.D3JS do
     svg.append("text")
     .attr("x", xaxis(0) - 1 * padding)
     .attr("y", yaxis(1) - 0.25 * padding)
-    .text(() => "Value Chain")
+    .text(() => "Value Chain");
+
+    var name
+    var parts
+
+    mapItems.forEach((item) => {
+      if(item.startsWith("anchor")) {
+        
+        name = /anchor (?<name>[^ $]*)/.exec(item).groups.name
+        parts = item.split("[")
+        parts = parts[1]
+        parts = parts.split("]")
+        parts = parts[0]
+        parts = parts.split(",")
+
+        svg.append("text")
+        .attr("x", xaxis(parseFloat(parts[1])))
+        .attr("y", yaxis(parseFloat(parts[0])))
+        .text(() => name)
+      }
+
+      if(item.startsWith("component")) {
+          name = /component\s([^\[]*)\s\\[/.exec(item)[1]
+        parts = item.split("[")
+        parts = parts[1]
+        parts = parts.split("]")
+        parts = parts[0]
+        parts = parts.split(",")
+
+        svg.append("text")
+        .attr("x", xaxis(parseFloat(parts[1])))
+        .attr("y", yaxis(parseFloat(parts[0])))
+        .text(() => name)      
+      }
+
+
+    })
 
 
     // ==== end of JS ====
@@ -125,6 +168,13 @@ end
 
 ```elixir
 Kino.D3JS.new("""
-{"id": "myid7"}
+{
+  "id": "myid7",
+  "map" : [
+    "anchor Business [0.95, 0.63]",
+    "anchor Public [0.95, 0.78]",
+    "component Cup of Tea [0.79, 0.61]"
+  ]
+}
 """)
 ```
