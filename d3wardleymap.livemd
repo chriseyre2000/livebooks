@@ -8,7 +8,7 @@ Mix.install([
 ])
 ```
 
-## Getting Closer
+## Functionally Working, missing labels
 
 This is an attempt to create a Wardley Mapping rendered in Livebook
 
@@ -231,86 +231,56 @@ defmodule Kino.D3JS do
     })
 
     // Circles and text
-    mapItems.forEach((item) => {
-      if(item.startsWith("anchor")) {
-        
-        name = /anchor (?<name>[^ $]*)/.exec(item).groups.name
-        parts = item.split("[")
-        parts = parts[1]
-        parts = parts.split("]")
-        parts = parts[0]
-        parts = parts.split(",")
-
+    for (const [key, item] of Object.entries(summary)) {
+      if (item.type === "anchor") {
         svg.append("text")
-        .attr("x", xaxis(parseFloat(parts[1])))
-        .attr("y", yaxis(parseFloat(parts[0])))
-        .text(() => name)
+        .attr("x", xaxis(item.x))
+        .attr("y", yaxis(item.y))
+        .text(() => item.name)
       }
 
-      if(item.startsWith("component")) {
-        name = /component\s([^\[]*)\s\\[/.exec(item)[1]
-        parts = item.split("[")
-        parts = parts[1]
-        parts = parts.split("]")
-        parts = parts[0]
-        parts = parts.split(",")
-
-        x = parseFloat(parts[1])
-        y = parseFloat(parts[0])
-
-        svg.append("circle")
-        .attr("cx", xaxis(x))
-        .attr("cy", yaxis(y))
+      if (item.type === "component") {
+         svg.append("circle")
+        .attr("cx", xaxis(item.x))
+        .attr("cy", yaxis(item.y))
         .attr("r", 3)
         .style("stroke", "black")
         .style("fill", "white")
 
         svg.append("text")
-        .attr("x", xaxis(x) + 7)
-        .attr("y", yaxis(y) + 5)
+        .attr("x", xaxis(item.x) + 7)
+        .attr("y", yaxis(item.y) + 5)
         .text(() => name)
         
-        if(summary[name + "__evolve"] != undefined) {
-          let start = summary[name]
-          let startEvolved = summary[start.name + "__evolve"] 
+        if(summary[item.name + "__evolve"] != undefined) {
+          let evolved = summary[item.name + "__evolve"] 
           
           svg.append('line')
           .style("stroke", "red")
           .style("stroke-width", 1)
           .style("stroke-dasharray", ("3, 3"))
-          .attr("x1", xaxis(start.x))
-          .attr("y1", yaxis(start.y) )
-          .attr("x2", xaxis(startEvolved.x))
-          .attr("y2", yaxis(startEvolved.y)); 
+          .attr("x1", xaxis(item.x))
+          .attr("y1", yaxis(item.y) )
+          .attr("x2", xaxis(evolved.x))
+          .attr("y2", yaxis(evolved.y)); 
         }
-
       }
 
-      if(item.startsWith("evolve")) {
-          name = /evolve\s([^\[]*)\s\\[/.exec(item)[1]
-        parts = item.split("[")
-        parts = parts[1]
-        parts = parts.split("]")
-        parts = parts[0]
-        parts = parts.split(",")
-        x = parseFloat(parts[1])
-        y = parseFloat(parts[0])
-
+      if(item.type === "evolve") {
         svg.append("circle")
-        .attr("cx", xaxis(x))
-        .attr("cy", yaxis(y))
+        .attr("cx", xaxis(item.x))
+        .attr("cy", yaxis(item.y))
         .attr("r", 3)
         .style("stroke", "red")
         .style("fill", "white")
 
         svg.append("text")
-        .attr("x", xaxis(x) + 7)
-        .attr("y", yaxis(y) + 5)
+        .attr("x", xaxis(item.x) + 7)
+        .attr("y", yaxis(item.y) + 5)
         .style('fill', 'red')
-        .text(() => name)      
+        .text(() => name)    
       }
-
-    })
+    }
 
 
     // ==== end of JS ====
@@ -324,6 +294,8 @@ end
 Kino.D3JS.new("""
 {
   "id": "myid7",
+  "height": "400",
+  "width": "800",
   "map" : [
     "anchor Business [0.95, 0.63]",
     "anchor Public [0.95, 0.78]",
