@@ -7,3 +7,11 @@ You should be able to get livebook installed on your machine here: https://liveb
 ## data.livemd 
 
 is the worked example from https://www.elixir4datascience.com/data-visualization-first-steps/
+
+## d3js.livemd
+
+This is the trivial d3 sample in livebook.
+
+## d3wardeleymap.livemd
+
+This is an implementation of a Wardley Map visualiser using d3.
