@@ -250,7 +250,7 @@ defmodule Kino.D3JS do
         svg.append("text")
         .attr("x", xaxis(item.x) + 7)
         .attr("y", yaxis(item.y) + 5)
-        .text(() => name)
+        .text(() => item.name)
         
         if(summary[item.name + "__evolve"] != undefined) {
           let evolved = summary[item.name + "__evolve"] 
