@@ -240,18 +240,8 @@ defmodule Kino.D3JS do
       }
 
       if (item.type === "component") {
-         svg.append("circle")
-        .attr("cx", xaxis(item.x))
-        .attr("cy", yaxis(item.y))
-        .attr("r", 3)
-        .style("stroke", "black")
-        .style("fill", "white")
 
-        svg.append("text")
-        .attr("x", xaxis(item.x) + 7)
-        .attr("y", yaxis(item.y) + 5)
-        .text(() => item.name)
-        
+
         if(summary[item.name + "__evolve"] != undefined) {
           let evolved = summary[item.name + "__evolve"] 
           
@@ -264,6 +254,28 @@ defmodule Kino.D3JS do
           .attr("x2", xaxis(evolved.x))
           .attr("y2", yaxis(evolved.y)); 
         }
+
+        svg.append("circle")
+        .attr("cx", xaxis(item.x))
+        .attr("cy", yaxis(item.y))
+        .attr("r", 3)
+        .style("stroke", "black")
+        .style("fill", "white");
+
+        svg.append('rect')
+        .attr('x', xaxis(item.x) + 7)
+        .attr('y', yaxis(item.y) - 7)
+        .attr('width', 8 * item.name.length)
+        .attr('height', 14)
+        .attr('stroke', 'white')
+        .attr('fill', 'white');
+
+        svg.append("text")
+        .attr("x", xaxis(item.x) + 7)
+        .attr("y", yaxis(item.y) + 5)
+        .text(() => item.name)
+        
+
       }
 
       if(item.type === "evolve") {
@@ -273,6 +285,14 @@ defmodule Kino.D3JS do
         .attr("r", 3)
         .style("stroke", "red")
         .style("fill", "white")
+
+        svg.append('rect')
+        .attr('x', xaxis(item.x) + 7)
+        .attr('y', yaxis(item.y) - 7)
+        .attr('width', 8 * item.name.length)
+        .attr('height', 14)
+        .attr('stroke', 'white')
+        .attr('fill', 'white');
 
         svg.append("text")
         .attr("x", xaxis(item.x) + 7)
