@@ -8,7 +8,7 @@ Mix.install([
 ])
 ```
 
-## Crude Starting point
+## Getting Closer
 
 This is an attempt to create a Wardley Mapping rendered in Livebook
 
@@ -268,7 +268,22 @@ defmodule Kino.D3JS do
         svg.append("text")
         .attr("x", xaxis(x) + 7)
         .attr("y", yaxis(y) + 5)
-        .text(() => name)      
+        .text(() => name)
+        
+        if(summary[name + "__evolve"] != undefined) {
+          let start = summary[name]
+          let startEvolved = summary[start.name + "__evolve"] 
+          
+          svg.append('line')
+          .style("stroke", "red")
+          .style("stroke-width", 1)
+          .style("stroke-dasharray", ("3, 3"))
+          .attr("x1", xaxis(start.x))
+          .attr("y1", yaxis(start.y) )
+          .attr("x2", xaxis(startEvolved.x))
+          .attr("y2", yaxis(startEvolved.y)); 
+        }
+
       }
 
       if(item.startsWith("evolve")) {
