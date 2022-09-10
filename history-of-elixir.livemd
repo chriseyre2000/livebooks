@@ -1,0 +1,42 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# History of Elixir in Wardley Maps
+
+```elixir
+Mix.install([{:kino_wardley, "~> 0.6.0"}])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+nil
+```
+
+## In The Beginning
+
+```elixir
+KinoWardley.Output.new("""
+title The Early Days
+style wardley
+anchor Dev Experience [0.90, 0.7] label [-30, 0]
+anchor Concurrency [0.90, 0.55] label [-40, 0]
+
+component Ruby [0.75, 0.7]
+component Erlang [0.5, 0.6]
+
+component Elixir [0.7, 0.2] label [-50, 0]
+
+Dev Experience->Ruby
+Concurrency->Erlang
+
+Dev Experience->Elixir
+Concurrency->Elixir
+
+Elixir->Erlang
+
+note After Reading Seven Languages in Seven Weeks José Valim was inspired [0.23, 0.1]
+
+""")
+```
+
+This is the story of Elixir, described using Wardley Maps
