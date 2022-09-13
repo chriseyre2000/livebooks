@@ -4,12 +4,13 @@
 
 ```elixir
 Mix.install([{:kino_wardley, "~> 0.6.0"}])
+alias KinoWardley.Output, as: Wardley
 ```
 
 <!-- livebook:{"output":true} -->
 
 ```
-nil
+:ok
 ```
 
 ## In The Beginning
@@ -18,11 +19,12 @@ nil
 KinoWardley.Output.new("""
 title The Early Days
 style wardley
-anchor Dev Experience [0.90, 0.7] label [-30, 0]
-anchor Concurrency [0.90, 0.55] label [-40, 0]
+anchor Dev Experience [0.90, 0.7] label [-40, 0]
+anchor Concurrency [0.90, 0.55] label [-50, 0]
 
 component Ruby [0.75, 0.7]
 component Erlang [0.5, 0.6]
+component BEAM [0.3, 0.7]
 
 component Elixir [0.7, 0.2] label [-50, 0]
 
@@ -31,8 +33,9 @@ Concurrency->Erlang
 
 Dev Experience->Elixir
 Concurrency->Elixir
+Erlang->BEAM
+Elixir->BEAM
 
-Elixir->Erlang
 
 note After Reading Seven Languages in Seven Weeks José Valim was inspired [0.23, 0.1]
 
@@ -40,3 +43,28 @@ note After Reading Seven Languages in Seven Weeks José Valim was inspired [0.23
 ```
 
 This is the story of Elixir, described using Wardley Maps
+
+```elixir
+KinoWardley.Output.new("""
+style wardley
+title Early Days
+
+component Ecto [0.7, 0.1] label [-50, 0]
+
+component Elixir [0.4, 0.2] label [-50, 0]
+evolve Elixir 0.35 label [10, 0]
+
+component Hex.pm [0.2, 0.2]
+
+component Plug [0.5, 0.1] label [-50, 0]
+
+Elixir->Ecto
+
+Hex.pm->Elixir
+
+Plug -> Elixir
+
+note Elixir started to mature [0.2, 0.4]
+
+""")
+```
