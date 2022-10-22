@@ -30,8 +30,6 @@ digraph architecture {
 }
 """
 
-System.put_env("data", data)
-
-{body, _} = System.shell("echo '${data}' | /usr/local/bin/dot -Tpng", stderr_to_stdout: true)
+{body, _} = System.shell("echo '#{data}' | /usr/local/bin/dot -Tpng", stderr_to_stdout: true)
 Kino.Image.new(body, :png)
 ```
