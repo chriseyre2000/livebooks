@@ -1,0 +1,37 @@
+# Dynamic Diagrams
+
+```elixir
+Mix.install([{:kino, "~> 0.7.0"}])
+```
+
+## Section
+
+```elixir
+data = """
+digraph architecture {
+  rankdir=LR;
+
+  subgraph client_side_apps {
+      front_end -> {auth_api, my_app_api};
+      extension -> {auth_api, my_app_api};
+      
+      {rank=same; front_end, extension, auth_api};
+  }
+  
+  subgraph api_gateways {
+      my_app_api -> {photos_ms, chats_ms, friends_ms};
+  }
+  
+  subgraph microservices {
+      photos_ms -> {database};
+      chats_ms -> {database, cache};
+      friends_ms -> {database, facebook_api};
+  }
+}
+"""
+
+System.put_env("data", data)
+
+{body, _} = System.shell("echo '${data}' | /usr/local/bin/dot -Tpng", stderr_to_stdout: true)
+Kino.Image.new(body, :png)
+```
