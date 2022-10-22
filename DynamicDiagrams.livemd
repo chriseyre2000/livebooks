@@ -7,6 +7,26 @@ Mix.install([{:kino, "~> 0.7.0"}])
 ## Section
 
 ```elixir
+defmodule GraphvizEx do
+  def new(source) do
+    {body, _} =
+      System.shell("echo '#{source}' | /usr/local/bin/dot -Tpng", stderr_to_stdout: true)
+
+    Kino.Image.new(body, :png)
+  end
+end
+
+defmodule PlantUmlEx do
+  def new(source) do
+    {body, _} =
+      System.shell("echo '#{source}' | /usr/local/bin/plantuml -p", stderr_to_stdout: true)
+
+    Kino.Image.new(body, :png)
+  end
+end
+```
+
+```elixir
 data = """
 digraph architecture {
   rankdir=LR;
@@ -30,6 +50,19 @@ digraph architecture {
 }
 """
 
-{body, _} = System.shell("echo '#{data}' | /usr/local/bin/dot -Tpng", stderr_to_stdout: true)
-Kino.Image.new(body, :png)
+GraphvizEx.new(data)
+```
+
+```elixir
+PlantUmlEx.new("""
+@startuml
+
+Title "This is an activity diagram"
+
+Actor A
+Database B
+
+A -> B: send
+@enduml
+""")
 ```
